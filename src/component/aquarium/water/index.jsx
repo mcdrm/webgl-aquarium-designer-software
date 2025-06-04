@@ -1,65 +1,76 @@
 import * as THREE from 'three';
-import React, { useRef, useEffect } from 'react';
-import { useFrame } from "@react-three/fiber";
+import React, { useMemo } from 'react';
+import { useFrame } from '@react-three/fiber';
 import { useSelector } from 'react-redux';
 
 const Water = () => {
-    const waterRef = useRef();
-    const time = useRef(0);
-    const { width, length, height, thickness } = useSelector((state) => state.aquariumCfg);
+    const { width, length, height } = useSelector((state) => state.aquariumCfg);
+    const waterMaterial = useMemo(() => {
+        return new THREE.ShaderMaterial({
+            uniforms: {
+                time: { value: 0 },
+                uColor: { value: new THREE.Color(0xF0F8FF) },
+                uDepth: { value: height },
+                resolution: { value: new THREE.Vector2(width, length) },
+            },
+            vertexShader: `
+                uniform float time;
+                varying vec2 vUv;
+                varying vec3 vPosition;
+                
+                float calculateWave(vec2 pos, float time, float freq, float amplitude) {
+                    return sin(pos.x * freq + time) * cos(pos.y * freq + time) * amplitude;
+                }
+                
+                void main() {
+                    vUv = uv;
+                    vPosition = position;
+                    
+                    vec3 pos = position;
+                    float wave1 = calculateWave(pos.xy, time * 1.0, 3.0, 0.1);
+                    float wave2 = calculateWave(pos.xy, time * 0.8, 5.0, 0.05);
+                    float wave3 = calculateWave(pos.xy, time * 1.2, 7.0, 0.025);
+                    
+                    pos.z += wave1 + wave2 + wave3;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform vec3 uColor;
+                uniform float time;
+                uniform float uDepth;
+                varying vec2 vUv;
+                varying vec3 vPosition;
+                
+                void main() {
+                    vec3 waterColor = uColor;
+                    
+                    float surface = sin(vUv.x * 10.0 + time) * sin(vUv.y * 10.0 + time) * 0.1;
+                    float depth = 1.0 - (vPosition.y / uDepth);
+                    
+                    vec3 final = mix(waterColor, vec3(1.0), surface);
+                    final = mix(final, waterColor * 0.5, depth * 0.5);
+                    
+                    gl_FragColor = vec4(final, 0.9);
+                }
+            `,
+            transparent: true,
+            side: THREE.DoubleSide,
+        });
+    }, [height]);
 
-    // Create geometry only once
-    const geometry = useRef(new THREE.PlaneGeometry(width - thickness, length - thickness, 32, 32)).current;
-
-    // Update geometry dimensions when width or length changes
-    useEffect(() => {
-        if (waterRef.current) {
-            // Update geometry size
-            geometry.dispose(); // Dispose the old geometry to free memory
-            const newGeometry = new THREE.PlaneGeometry(width - thickness, length - thickness, 32, 32);
-            waterRef.current.geometry = newGeometry; // Assign the new geometry
-            waterRef.current.geometry.needsUpdate = true; // Mark geometry as needing an update
-        }
-    }, [width, length, thickness]);
-
-    useFrame(() => {
-        time.current += 0.05;
-        if (waterRef.current) {
-            waterRef.current.material.uniforms.time.value = time.current;
-            waterRef.current.material.needsUpdate = true; // Mark material as needing an update
-        }
+    useFrame((state) => {
+        waterMaterial.uniforms.time.value = state.clock.getElapsedTime();
     });
 
     return (
-        <mesh ref={waterRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, height * 0.9, 0]}>
-            <primitive object={geometry} />
-            <shaderMaterial
-                opacity={0.5}
-                transparent={true}
-                side={THREE.DoubleSide}
-                uniforms={{
-                    time: { value: 0 },
-                    color: { value: new THREE.Color(0x1e90ff) },
-                }}
-                vertexShader={`
-                varying vec2 vUv;
-                uniform float time;
-                void main() {
-                    vUv = uv;
-                    vec4 pos = vec4(position, 1.0);
-                    pos.z += sin(vUv.x * 20.0 + time) * 0.03;
-                    pos.z += cos(vUv.y * 20.0 + time) * 0.03;
-                    gl_Position = projectionMatrix * modelViewMatrix * pos;
-                }
-                `}
-                fragmentShader={`
-                varying vec2 vUv;
-                uniform vec3 color;
-                void main() {
-                    gl_FragColor = vec4(color, 0.5); // Adjust alpha for translucency
-                }
-                `}
-            />
+        <mesh
+            rotation={[-Math.PI / 2, 0, 0]}
+            position={[0, height * 0.9, 0]}
+            scale={[width, length, 1]}
+        >
+            <planeGeometry args={[1, 1, 64, 64]} />
+            <primitive object={waterMaterial} attach="material" />
         </mesh>
     );
 };
