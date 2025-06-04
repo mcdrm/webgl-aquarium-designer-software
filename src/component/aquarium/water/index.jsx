@@ -9,7 +9,7 @@ const Water = () => {
         return new THREE.ShaderMaterial({
             uniforms: {
                 time: { value: 0 },
-                uColor: { value: new THREE.Color(0xF0F8FF) },
+                uColor: { value: new THREE.Color(0xEEEEEE) },
                 uDepth: { value: height },
                 resolution: { value: new THREE.Vector2(width, length) },
             },
@@ -48,10 +48,10 @@ const Water = () => {
                     float surface = sin(vUv.x * 10.0 + time) * sin(vUv.y * 10.0 + time) * 0.1;
                     float depth = 1.0 - (vPosition.y / uDepth);
                     
-                    vec3 final = mix(waterColor, vec3(1.0), surface);
-                    final = mix(final, waterColor * 0.5, depth * 0.5);
+                    vec3 finalColor = mix(waterColor, vec3(1.0), surface);
+                    finalColor = mix(finalColor, waterColor * 0.5, depth * 0.5);
                     
-                    gl_FragColor = vec4(final, 0.9);
+                    gl_FragColor = vec4(finalColor, 0.3); // Set alpha to 0.1 for transparency
                 }
             `,
             transparent: true,

@@ -38,30 +38,45 @@ const GlassBox = () => {
 
         return model;
     }, [width, length])
+
+    const pillarShape = useMemo(() => {
+        const model = new THREE.Shape();
+        model.moveTo(0, 0);
+        model.lineTo(-thickness / 2, 0)
+        model.lineTo(-thickness / 2, thickness / 10)
+        model.lineTo(thickness / 10, thickness / 10)
+        model.lineTo(thickness / 10, - thickness / 2)
+        model.lineTo(0, - thickness / 2)
+        model.closePath();
+
+        return model;
+    }, [thickness])
     
-  const events = useThree((state) => state.events)
     return (
         <>
             <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, thickness + 0.0001, 0]}>
                 <extrudeGeometry args={[glassBoxSideShape, { depth: height - thickness, bevelEnabled: false }]} />
-                {/* <meshPhysicalMaterial
-                    color="lightblue"
-                    transparent
-                    opacity={0.2}
-                    roughness={0.1}
-                    metalness={0.3}
-                    clearcoat={0.5}
-                    clearcoatRoughness={0.1}
-                    refractionRatio={0.5}
-                    side={THREE.DoubleSide}
-                /> */}
-                <MeshTransmissionMaterial clearcoat={1} samples={2} resolution={1024} thickness={0.05} roughness={0} anisotropy={1} chromaticAberration={0} />
-                {/* <MeshTransmissionMaterial clearcoat={1} samples={3} thickness={40} chromaticAberration={0.25} anisotropy={0.4} /> */}
-
+                <MeshTransmissionMaterial color={'#B8DBFC'} clearcoat={1} samples={20} resolution={2048} thickness={0.05} roughness={0.1} anisotropy={1} chromaticAberration={0} />
             </mesh>
             <mesh rotation={[-Math.PI / 2, 0, 0]}>
                 <extrudeGeometry args={[glassBoxBottomShape, { depth: thickness, bevelEnabled: false }]} />
-                <meshStandardMaterial color='#0066FF' />
+                <meshStandardMaterial color='#3c3c3c' />
+            </mesh>
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[width / 2, 0, -length / 2]}>
+                <extrudeGeometry args={[pillarShape, { depth: height, bevelEnabled: false }]} />
+                <meshStandardMaterial color='#8c8c8c' roughness={0.1} metalness={0.3} />
+            </mesh>
+            <mesh rotation={[-Math.PI / 2, 0, Math.PI / 2]} position={[-width / 2, 0, -length / 2]}>
+                <extrudeGeometry args={[pillarShape, { depth: height, bevelEnabled: false }]} />
+                <meshStandardMaterial color='#8c8c8c' roughness={0.1} metalness={0.3} />
+            </mesh>
+            <mesh rotation={[-Math.PI / 2, 0, Math.PI]} position={[-width / 2, 0, length / 2]}>
+                <extrudeGeometry args={[pillarShape, { depth: height, bevelEnabled: false }]} />
+                <meshStandardMaterial color='#8c8c8c' roughness={0.1} metalness={0.3} />
+            </mesh>
+            <mesh rotation={[-Math.PI / 2, 0, -Math.PI / 2]} position={[width / 2, 0, length / 2]}>
+                <extrudeGeometry args={[pillarShape, { depth: height, bevelEnabled: false }]} />
+                <meshStandardMaterial color='#8c8c8c' roughness={0.1} metalness={0.3} />
             </mesh>
         </>
     )
