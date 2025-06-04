@@ -1,10 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    width: 5,
-    length: 4,
-    height: 3,
-    thickness: 1,
+    width: 0,
+    length: 0,
+    height: 0,
+    thickness: 0,
 }
 
 export const aquariumConfigSlice = createSlice ({

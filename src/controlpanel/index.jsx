@@ -36,7 +36,7 @@ const ControlPanel = () => {
         width: 5,
         length: 4,
         height: 3,
-        thickness: 1,
+        thickness: 0.1,
     })
 
     const handleDrawerOpen = () => {
@@ -49,7 +49,6 @@ const ControlPanel = () => {
 
     const handleDimensionChange = (e) => {
         const { name, value } = e.target;
-        console.log({name, value});
         const numValue = Number(value);
         setAquariumSizeVal(prev => ({...prev, [name]: numValue}))
         dispatch(setAquariumSize)

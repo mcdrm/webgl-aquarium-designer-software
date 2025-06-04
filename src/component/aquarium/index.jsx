@@ -1,15 +1,13 @@
 import React from 'react'
 
 import Water from './water';
+import GlassBox from './glassbox';
 
 const Aquarium = () => {
     return (
         <>
             <Water />
-            <mesh>
-                <boxGeometry args={[2, 3, 4]} />
-                <meshStandardMaterial color='green' />
-            </mesh>
+            <GlassBox />
         </>
     )
 }
