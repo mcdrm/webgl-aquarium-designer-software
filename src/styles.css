@@ -15,8 +15,8 @@ body,
 }
 
 body {
-  background: black;
-  color: white;
+  background: rgb(255, 255, 255);
+  color: rgb(255, 255, 255);
   font-family: 'Inter';
 }
 
