@@ -38,12 +38,14 @@ const ControlPanel = () => {
         height: 3,
         thickness: 0.1,
     })
+    const [selectedAccVal, setSelectedAccVal] = useState('')
 
     const handleDrawerOpen = () => {
         setOpen(true);
     };
 
     const handleDrawerClose = () => {
+        setSelectedAccVal('')
         setOpen(false);
     };
 
@@ -52,6 +54,10 @@ const ControlPanel = () => {
         const numValue = Number(value);
         setAquariumSizeVal(prev => ({...prev, [name]: numValue}))
         dispatch(setAquariumSize)
+    }
+
+    const handleAccordionChange = (val) => {
+        setSelectedAccVal(val)
     }
 
     useEffect(() => {
@@ -86,7 +92,7 @@ const ControlPanel = () => {
                 <Divider />
                 {open &&
                     <div className='ui-option-panel'>
-                        <Accordion>
+                        <Accordion expanded={selectedAccVal === 'dimension'} onChange={() => {if(selectedAccVal === 'dimension') handleAccordionChange(''); else handleAccordionChange('dimension')}}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="size-options-content" id="size-options-header" >
                                 <Typography>Dimension</Typography>
                             </AccordionSummary>
@@ -146,7 +152,7 @@ const ControlPanel = () => {
                                 </div>
                             </AccordionDetails>
                         </Accordion>
-                        <Accordion>
+                        <Accordion expanded={selectedAccVal === 'light'} onChange={() => {if(selectedAccVal === 'light') handleAccordionChange(''); else handleAccordionChange('light')}}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="color-pickers-content" id="color-pickers-header" >
                                 <Typography>Light Color</Typography>
                             </AccordionSummary>
@@ -167,7 +173,7 @@ const ControlPanel = () => {
                                 />
                             </AccordionDetails>
                         </Accordion>
-                        <Accordion>
+                        <Accordion expanded={selectedAccVal === 'sand'} onChange={() => {if(selectedAccVal === 'sand') handleAccordionChange(''); else handleAccordionChange('sand')}}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="color-pickers-content" id="color-pickers-header" >
                                 <Typography>Sand</Typography>
                             </AccordionSummary>
@@ -197,13 +203,13 @@ const ControlPanel = () => {
                 }
                 <Divider />
                 <List>
-                    {['size', 'light', 'color'].map((text, index) => (
+                    {['dimension', 'light', 'sand'].map((text, index) => (
                         <ListItem key={text} disablePadding sx={{ display: 'block' }}>
                             <ListItemButton sx={[ { minHeight: 48, px: 2.5 }, open ? { display: 'none'} : { justifyContent: 'center'} ]}>
-                                <ListItemIcon sx={[ { minWidth: 0, justifyContent: 'center' } ]}>
-                                    {text === 'size' && <PictureInPictureIcon />}
-                                    {text === 'light' && <WbIncandescentIcon />}
-                                    {text === 'color' && <ColorLensIcon />}
+                                <ListItemIcon sx={[ { minWidth: 0, justifyContent: 'center' } ]} onClick={handleDrawerOpen}>
+                                    {text === 'dimension' && <PictureInPictureIcon onClick={() => {handleAccordionChange(text)}} />}
+                                    {text === 'light' && <WbIncandescentIcon onClick={() => {handleAccordionChange(text)}} />}
+                                    {text === 'sand' && <ColorLensIcon onClick={() => {handleAccordionChange(text)}} />}
                                 </ListItemIcon>
                             </ListItemButton>
                         </ListItem>

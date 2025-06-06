@@ -2,7 +2,8 @@ import * as THREE from 'three'
 import React, { useMemo } from 'react'
 import { useThree } from '@react-three/fiber'
 import { useSelector } from 'react-redux';
-import { MeshTransmissionMaterial, RenderTexture } from '@react-three/drei';
+import { MeshTransmissionMaterial, RenderTexture, RoundedBox } from '@react-three/drei';
+import { extrudeSettings } from '../../../utils/functions';
 
 const GlassBox = () => {
     const { gl } = useThree();
@@ -50,10 +51,13 @@ const GlassBox = () => {
         model.closePath();
 
         return model;
-    }, [thickness])
-    
+    }, [thickness])    
+
+    const baseCircleShape = new THREE.Shape();
+    baseCircleShape.absarc(0, 0, Math.max(width, length), 0, Math.PI * 2, false);
+
     return (
-        <>
+        <group castShadow receiveShadow>
             <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, thickness + 0.0001, 0]}>
                 <extrudeGeometry args={[glassBoxSideShape, { depth: height - thickness, bevelEnabled: false }]} />
                 <MeshTransmissionMaterial color={'#B8DBFC'} clearcoat={1} samples={20} resolution={2048} thickness={0.05} roughness={0.1} anisotropy={1} chromaticAberration={0} />
@@ -78,7 +82,17 @@ const GlassBox = () => {
                 <extrudeGeometry args={[pillarShape, { depth: height, bevelEnabled: false }]} />
                 <meshStandardMaterial color='#8c8c8c' roughness={0.1} metalness={0.3} />
             </mesh>
-        </>
+
+            <mesh position={[0, -0.05, 0]} receiveShadow>
+                <RoundedBox 
+                    args={[width * 1.5, 0.1, length * 1.5]} // Width, Height, Depth
+                    radius={0.05} // Bevel size
+                    smoothness={4} // Smoothness of the corners
+                >
+                    <meshStandardMaterial color='#8c8c8c' roughness={0.1} metalness={0.3} />
+                </RoundedBox>
+            </mesh>
+        </group>
     )
 }
 

@@ -5,6 +5,7 @@ const initialState = {
     length: 0,
     height: 0,
     thickness: 0,
+    selectedAccItem: '',
 }
 
 export const aquariumConfigSlice = createSlice ({
@@ -19,7 +20,7 @@ export const aquariumConfigSlice = createSlice ({
         },
         setAquariumSize: (state, action) => {
             state[Object.keys(action.payload)[0]] = action.payload[Object.keys(action.payload)[0]]
-        }
+        },
     }
 })
 

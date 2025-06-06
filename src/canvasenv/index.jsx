@@ -1,16 +1,24 @@
 import React from 'react'
 import { Environment, OrbitControls, PerformanceMonitor, useEnvironment } from '@react-three/drei'
+import { useSelector } from 'react-redux';
+import { DirectionalLight } from 'three';
 
 const CanvasEnv = () => {
-  const env = useEnvironment({ files: 'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/peppermint_powerplant_2_1k.hdr' })
+    const height = useSelector((state) => state.aquariumCfg.height);
+    const env = useEnvironment({ files: '/assets/env/peppermint_powerplant_2_1k.hdr' })
 
     return (
         <>
-            <OrbitControls />
+            <OrbitControls
+                target={[0, height / 2, 0]}
+                maxPolarAngle={Math.PI / 2.1}
+                enablePan={false}
+            />
 
-            <spotLight position={[0, 15, 0]} angle={0.3} penumbra={1} castShadow intensity={2} shadow-bias={-0.0001} />
+            <spotLight position={[0, 15, 0]} angle={0.3} penumbra={1} intensity={2} />
             <ambientLight intensity={0.5} />
-            <Environment map={env} background blur={1} />
+            <directionalLight position={[10, 10, 5]} castShadow intensity={0.5} shadow-bias={-0.0001} />
+            <Environment map={env} background blur={0.5} />
             <PerformanceMonitor />
             <axesHelper args={[50, 50, 50]} />
         </>

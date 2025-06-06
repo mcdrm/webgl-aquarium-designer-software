@@ -78,3 +78,13 @@ export const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 
         ],
     }),
 );
+
+export const extrudeSettings = (depthSize, isBevel, bevelThickness, bevelSize, bevelSegments) => {
+    return {
+        depth: depthSize,
+        bevelEnabled: isBevel,
+        bevelThickness: bevelThickness,
+        bevelSize: bevelSize,
+        bevelSegments: bevelSegments,
+    }
+};
