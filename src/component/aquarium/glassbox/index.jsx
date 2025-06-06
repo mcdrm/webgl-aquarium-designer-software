@@ -2,11 +2,9 @@ import * as THREE from 'three'
 import React, { useMemo } from 'react'
 import { useThree } from '@react-three/fiber'
 import { useSelector } from 'react-redux';
-import { MeshTransmissionMaterial, RenderTexture, RoundedBox } from '@react-three/drei';
-import { extrudeSettings } from '../../../utils/functions';
+import { MeshTransmissionMaterial } from '@react-three/drei';
 
 const GlassBox = () => {
-    const { gl } = useThree();
     const { width, length, height, thickness } = useSelector((state) => state.aquariumCfg);
 
     const glassBoxSideShape = useMemo(() => {
@@ -58,39 +56,29 @@ const GlassBox = () => {
 
     return (
         <group castShadow receiveShadow>
-            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, thickness + 0.0001, 0]}>
+            <mesh castShadow receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, thickness + 0.0001, 0]}>
                 <extrudeGeometry args={[glassBoxSideShape, { depth: height - thickness, bevelEnabled: false }]} />
                 <MeshTransmissionMaterial color={'#B8DBFC'} clearcoat={1} samples={20} resolution={2048} thickness={0.05} roughness={0.1} anisotropy={1} chromaticAberration={0} />
             </mesh>
-            <mesh rotation={[-Math.PI / 2, 0, 0]}>
+            <mesh castShadow receiveShadow rotation={[-Math.PI / 2, 0, 0]}>
                 <extrudeGeometry args={[glassBoxBottomShape, { depth: thickness, bevelEnabled: false }]} />
                 <meshStandardMaterial color='#3c3c3c' />
             </mesh>
-            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[width / 2, 0, -length / 2]}>
+            <mesh castShadow receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[width / 2, 0, -length / 2]}>
                 <extrudeGeometry args={[pillarShape, { depth: height, bevelEnabled: false }]} />
                 <meshStandardMaterial color='#8c8c8c' roughness={0.1} metalness={0.3} />
             </mesh>
-            <mesh rotation={[-Math.PI / 2, 0, Math.PI / 2]} position={[-width / 2, 0, -length / 2]}>
+            <mesh castShadow receiveShadow rotation={[-Math.PI / 2, 0, Math.PI / 2]} position={[-width / 2, 0, -length / 2]}>
                 <extrudeGeometry args={[pillarShape, { depth: height, bevelEnabled: false }]} />
                 <meshStandardMaterial color='#8c8c8c' roughness={0.1} metalness={0.3} />
             </mesh>
-            <mesh rotation={[-Math.PI / 2, 0, Math.PI]} position={[-width / 2, 0, length / 2]}>
+            <mesh castShadow receiveShadow rotation={[-Math.PI / 2, 0, Math.PI]} position={[-width / 2, 0, length / 2]}>
                 <extrudeGeometry args={[pillarShape, { depth: height, bevelEnabled: false }]} />
                 <meshStandardMaterial color='#8c8c8c' roughness={0.1} metalness={0.3} />
             </mesh>
-            <mesh rotation={[-Math.PI / 2, 0, -Math.PI / 2]} position={[width / 2, 0, length / 2]}>
+            <mesh castShadow receiveShadow rotation={[-Math.PI / 2, 0, -Math.PI / 2]} position={[width / 2, 0, length / 2]}>
                 <extrudeGeometry args={[pillarShape, { depth: height, bevelEnabled: false }]} />
                 <meshStandardMaterial color='#8c8c8c' roughness={0.1} metalness={0.3} />
-            </mesh>
-
-            <mesh position={[0, -0.05, 0]} receiveShadow>
-                <RoundedBox 
-                    args={[width * 1.5, 0.1, length * 1.5]} // Width, Height, Depth
-                    radius={0.05} // Bevel size
-                    smoothness={4} // Smoothness of the corners
-                >
-                    <meshStandardMaterial color='#8c8c8c' roughness={0.1} metalness={0.3} />
-                </RoundedBox>
             </mesh>
         </group>
     )

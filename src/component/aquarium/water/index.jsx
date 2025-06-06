@@ -9,7 +9,7 @@ const Water = () => {
         return new THREE.ShaderMaterial({
             uniforms: {
                 time: { value: 0 },
-                uColor: { value: new THREE.Color(0xEEEEEE) },
+                uColor: { value: new THREE.Color(0xCCCCCC) },
                 uDepth: { value: height },
                 resolution: { value: new THREE.Vector2(width, length) },
             },

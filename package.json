@@ -14,6 +14,7 @@
     "@pmndrs/branding": "0.0.8",
     "@react-three/drei": "9.56.22",
     "@react-three/fiber": "8.11.0",
+    "@react-three/postprocessing": "^3.0.4",
     "@reduxjs/toolkit": "^2.8.2",
     "@types/three": "0.149.0",
     "lamina": "1.1.23",
