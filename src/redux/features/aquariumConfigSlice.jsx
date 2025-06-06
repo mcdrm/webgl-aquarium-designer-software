@@ -5,7 +5,8 @@ const initialState = {
     length: 0,
     height: 0,
     thickness: 0,
-    selectedAccItem: '',
+    isCamAutoRotate: false,
+    isShowGrass: false,
 }
 
 export const aquariumConfigSlice = createSlice ({
@@ -21,9 +22,15 @@ export const aquariumConfigSlice = createSlice ({
         setAquariumSize: (state, action) => {
             state[Object.keys(action.payload)[0]] = action.payload[Object.keys(action.payload)[0]]
         },
+        setIsCamAutoRotate: state => {
+            state.isCamAutoRotate = !state.isCamAutoRotate;
+        },
+        setIsShowGrass: (state, action) => {
+            state.isShowGrass = !state.isShowGrass;
+        },
     }
 })
 
-export const { setInitAquariumSize, setAquariumSize } = aquariumConfigSlice.actions
+export const { setInitAquariumSize, setAquariumSize, setIsCamAutoRotate, setIsShowGrass } = aquariumConfigSlice.actions
 
 export default aquariumConfigSlice.reducer;

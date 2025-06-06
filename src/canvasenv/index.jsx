@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { DirectionalLight } from 'three';
 
 const CanvasEnv = () => {
-    const height = useSelector((state) => state.aquariumCfg.height);
+    const { height, isCamAutoRotate } = useSelector((state) => state.aquariumCfg);
     const env = useEnvironment({ files: '/assets/env/peppermint_powerplant_2_1k.hdr' })
 
     return (
@@ -13,6 +13,7 @@ const CanvasEnv = () => {
                 target={[0, height / 2, 0]}
                 maxPolarAngle={Math.PI / 2.1}
                 enablePan={false}
+                autoRotate={isCamAutoRotate}
             />
 
             <spotLight position={[0, 15, 0]} angle={0.3} penumbra={1} intensity={2} />
